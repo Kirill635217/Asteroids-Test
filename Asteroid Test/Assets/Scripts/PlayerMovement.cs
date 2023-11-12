@@ -48,13 +48,13 @@ namespace AsteroidsAssigment
 #endif
         }
 
-#if UNITY_EDITOR
         /// <summary>
         /// For testing in unity editor using mouse
         /// </summary>
         /// <param name="eventData"></param>
         public void OnMouseDrag(BaseEventData eventData)
         {
+#if UNITY_EDITOR
             pointerEventData = (PointerEventData)eventData;
 
             //Need to make resolution undependant as screen resolutions will vary
@@ -62,8 +62,8 @@ namespace AsteroidsAssigment
             delta /= ResolutionSetter.height;
             if(delta.x > 0.01f || delta.x < -0.01f)
                 Move(delta);
-        }
 #endif
+        }
 
         /// <summary>
         /// Handles touch drag
