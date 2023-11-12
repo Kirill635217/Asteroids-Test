@@ -6,7 +6,7 @@ namespace AsteroidsAssigment
 {
     public class Asteroid : MonoBehaviour, IDamageable
     {
-        public void Hit(float damage = 1)
+        public void Hit(int damage = 1)
         {
 
         }

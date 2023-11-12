@@ -6,6 +6,6 @@ namespace AsteroidsAssigment
 {
     public interface IDamageable
     {
-        void Hit(float damage = 1);
+        void Hit(int damage = 1);
     }
 }
