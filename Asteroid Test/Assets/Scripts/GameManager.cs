@@ -39,13 +39,25 @@ namespace AsteroidsAssigment
         /// </summary>
         private Player player;
 
+        /// <summary>
+        /// Called when an asteroid is destroyed
+        /// </summary>
         private UnityEvent onAsteroidDestroyed = new UnityEvent();
 
-        [SerializeField] private Transform leftWall;
-        [SerializeField] private Transform rightWall;
-        [SerializeField] private MenuScreen menuScreen;
-        [SerializeField] private GameplayScreen gameplayScreen;
-        [SerializeField] private LoseScreen loseScreen;
+        [Tooltip("The left wall to be used as a border for the screen")] [SerializeField]
+        private Transform leftWall;
+
+        [Tooltip("The right wall to be used as a border for the screen")] [SerializeField]
+        private Transform rightWall;
+
+        [Tooltip("The menu screen ui")] [SerializeField]
+        private MenuScreen menuScreen;
+
+        [Tooltip("The gameplay screen ui")] [SerializeField]
+        private GameplayScreen gameplayScreen;
+
+        [Tooltip("The lose screen ui")] [SerializeField]
+        private LoseScreen loseScreen;
 
         /// <summary>
         /// Screen width border position in world space
@@ -77,12 +89,18 @@ namespace AsteroidsAssigment
             player.Disable();
         }
 
+        /// <summary>
+        /// Set the walls to the screen border position
+        /// </summary>
         private void SetWalls()
         {
             leftWall.position = new Vector3(-screenBorderPosition, 0, 0);
             rightWall.position = new Vector3(screenBorderPosition, 0, 0);
         }
 
+        /// <summary>
+        /// Update the UI based on the current game state
+        /// </summary>
         private void UpdateUI()
         {
             switch (gameState)
@@ -137,9 +155,13 @@ namespace AsteroidsAssigment
                 Debug.LogError("No main camera found.");
                 return;
             }
+
             screenBorderPosition = Camera.main.ScreenToWorldPoint(screenPos).x;
         }
 
+        /// <summary>
+        /// Called when the player is destroyed
+        /// </summary>
         private void OnPlayerDestroyed()
         {
             gameState = GameState.LoseScreen;
@@ -150,6 +172,9 @@ namespace AsteroidsAssigment
             UpdateUI();
         }
 
+        /// <summary>
+        /// Start the game, clear the pool, reset the score, etc.
+        /// </summary>
         private void StartGame()
         {
             gameState = GameState.Gameplay;
@@ -162,23 +187,37 @@ namespace AsteroidsAssigment
             UpdateUI();
         }
 
+        /// <summary>
+        /// Called when the player clicks the go to menu button
+        /// </summary>
         private void OnGoToMenu()
         {
             gameState = GameState.Menu;
             UpdateUI();
         }
 
+        /// <summary>
+        /// Called when an asteroid is destroyed, increase the score
+        /// </summary>
         private void AsteroidDestroyed()
         {
             score++;
             onAsteroidDestroyed?.Invoke();
         }
 
+        /// <summary>
+        /// Subscribe to the onAsteroidDestroyed event, called when an asteroid is destroyed
+        /// </summary>
+        /// <param name="action"></param>
         public void SubscribeToOnAsteroidDestroyed(UnityAction action)
         {
             onAsteroidDestroyed.AddListener(action);
         }
 
+        /// <summary>
+        /// Unsubscribe from the onAsteroidDestroyed event, called when an asteroid is destroyed
+        /// </summary>
+        /// <param name="action"></param>
         public void UnsubscribeToOnAsteroidDestroyed(UnityAction action)
         {
             onAsteroidDestroyed.RemoveListener(action);

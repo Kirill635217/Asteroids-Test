@@ -4,9 +4,13 @@ using UnityEngine;
 
 namespace AsteroidsAssigment
 {
+    /// <summary>
+    /// The default bullet behaviour
+    /// </summary>
     public class DefaultBullet : Bullet
     {
-        [SerializeField] private float speed = 10f;
+        [Tooltip("The speed of the bullet")] [SerializeField]
+        private float speed = 10f;
 
         protected override void Move()
         {

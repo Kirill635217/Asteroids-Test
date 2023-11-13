@@ -6,13 +6,24 @@ using UnityEngine;
 
 namespace AsteroidsAssigment
 {
+    /// <summary>
+    /// The gameplay screen behaviour
+    /// </summary>
     public class GameplayScreen : MonoBehaviour
     {
+        /// <summary>
+        /// Player reference
+        /// </summary>
         private Player player;
 
-        [SerializeField] private TMP_Text scoreText;
-        [SerializeField] private TMP_Text hpText;
-        [SerializeField] private GameObject moveArea;
+        [Tooltip("The score text")] [SerializeField]
+        private TMP_Text scoreText;
+
+        [Tooltip("The hp text of the player")] [SerializeField]
+        private TMP_Text hpText;
+
+        [Tooltip("The move area for the player, used only in editor")] [SerializeField]
+        private GameObject moveArea;
 
 
         private void OnEnable()
@@ -34,15 +45,19 @@ namespace AsteroidsAssigment
             GameManager.Instance.SubscribeToOnAsteroidDestroyed(UpdateUI);
         }
 
+        /// <summary>
+        /// Update the UI with the current score and hp
+        /// </summary>
         private void UpdateUI()
         {
+            hpText.text = $"HP: {player.Health}";
             if (GameManager.Instance == null)
             {
                 scoreText.text = "Score: 0";
                 return;
             }
+
             scoreText.text = $"Score: {GameManager.Instance.Score}";
-            hpText.text = $"HP: {player.Health}";
         }
     }
 }

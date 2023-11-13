@@ -2,14 +2,27 @@ using UnityEngine;
 
 namespace AsteroidsAssigment
 {
+    /// <summary>
+    /// Manages the resolution of the game
+    /// </summary>
     public class ResolutionSetter : MonoBehaviour
     {
-        [SerializeField] [Range(0.25f, 1)] float _resolutionPercentage = 0.75f;
+        [SerializeField] [Range(0.25f, 1)] float resolutionPercentage = 0.75f;
 
+        /// <summary>
+        /// The width of the game
+        /// </summary>
         public static int width;
+
+        /// <summary>
+        /// The height of the game
+        /// </summary>
         public static int height;
-        public static float ratio;
-        private static bool Resized = false;
+
+        /// <summary>
+        /// Check if the game has been resized
+        /// </summary>
+        private static bool Resized;
 
         // Start is called before the first frame update
         void Awake()
@@ -18,8 +31,8 @@ namespace AsteroidsAssigment
             {
                 Resized = true;
 
-                var w = Screen.width * _resolutionPercentage;
-                var h = Screen.height * _resolutionPercentage;
+                var w = Screen.width * resolutionPercentage;
+                var h = Screen.height * resolutionPercentage;
 
                 width = Mathf.RoundToInt(w);
                 height = Mathf.RoundToInt(h);
@@ -31,15 +44,10 @@ namespace AsteroidsAssigment
                 Screen.SetResolution(width, height, true);
 
 #if UNITY_EDITOR
-                //Need to
                 width = Screen.width;
                 height = Screen.height;
 #endif
-
-                ratio = w / h;
             }
-
-            //    UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(1);
         }
     }
 }

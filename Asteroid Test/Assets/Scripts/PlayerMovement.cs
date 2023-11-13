@@ -22,22 +22,26 @@ namespace AsteroidsAssigment
         /// Previous touch position for calculating delta
         /// </summary>
         private Vector2 previousTouchPos;
+
         /// <summary>
         /// Pointer event data for calculating delta when using mouse
         /// </summary>
         private PointerEventData pointerEventData;
+
         /// <summary>
         /// New position to move to
         /// </summary>
         private Vector2 targetMovePosition;
 
-        [Tooltip("Player move speed in units per second")]
-        [SerializeField] private float playerMoveSpeed = 10;
-        [Tooltip("Player acceleration speed in units per second")]
-        [SerializeField] private float accelerationSpeed = 10;
+        [Tooltip("Player move speed in units per second")] [SerializeField]
+        private float playerMoveSpeed = 10;
+
+        [Tooltip("Player acceleration speed in units per second")] [SerializeField]
+        private float accelerationSpeed = 10;
 
         private void Awake()
         {
+            // Set the target position to the current position
             targetMovePosition = transform.position;
         }
 
@@ -60,7 +64,7 @@ namespace AsteroidsAssigment
             //Need to make resolution undependant as screen resolutions will vary
             var delta = pointerEventData.delta;
             delta /= ResolutionSetter.height;
-            if(delta.x > 0.01f || delta.x < -0.01f)
+            if (delta.x > 0.01f || delta.x < -0.01f)
                 Move(delta);
 #endif
         }
@@ -89,6 +93,10 @@ namespace AsteroidsAssigment
             touchCount = Input.touchCount;
         }
 
+        /// <summary>
+        /// Move the player to the new position inside the screen borders
+        /// </summary>
+        /// <param name="delta"></param>
         void Move(Vector2 delta)
         {
             targetMovePosition.x += Mathf.Abs(playerMoveSpeed) * delta.x;
