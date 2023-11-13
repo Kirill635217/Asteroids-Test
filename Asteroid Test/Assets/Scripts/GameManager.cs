@@ -41,6 +41,8 @@ namespace AsteroidsAssigment
 
         private UnityEvent onAsteroidDestroyed = new UnityEvent();
 
+        [SerializeField] private Transform leftWall;
+        [SerializeField] private Transform rightWall;
         [SerializeField] private MenuScreen menuScreen;
         [SerializeField] private GameplayScreen gameplayScreen;
         [SerializeField] private LoseScreen loseScreen;
@@ -70,8 +72,15 @@ namespace AsteroidsAssigment
             SetSingleton();
             SetScreenBorderPosition();
             UpdateUI();
+            SetWalls();
             player = FindObjectOfType<Player>();
             player.Disable();
+        }
+
+        private void SetWalls()
+        {
+            leftWall.position = new Vector3(-screenBorderPosition, 0, 0);
+            rightWall.position = new Vector3(screenBorderPosition, 0, 0);
         }
 
         private void UpdateUI()
