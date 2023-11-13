@@ -10,15 +10,32 @@ namespace AsteroidsAssigment
     /// </summary>
     public class GameManager : MonoBehaviour
     {
+        public enum GameState
+        {
+            Menu,
+            Gameplay,
+            LoseScreen,
+        }
+
         /// <summary>
         /// Screen width border position in world space
         /// </summary>
         private float screenBorderPosition;
 
         /// <summary>
+        /// Current game state
+        /// </summary>
+        private GameState gameState = GameState.Gameplay;
+
+        /// <summary>
         /// Screen width border position in world space
         /// </summary>
         public float ScreenBorderPosition => screenBorderPosition;
+
+        /// <summary>
+        /// Current game state
+        /// </summary>
+        public GameState CurrentGameState => gameState;
 
         /// <summary>
         /// GameManager singleton instance reference
@@ -29,6 +46,11 @@ namespace AsteroidsAssigment
         {
             SetSingleton();
             SetScreenBorderPosition();
+        }
+
+        private void Start()
+        {
+            StartGame();
         }
 
         /// <summary>
@@ -55,6 +77,11 @@ namespace AsteroidsAssigment
                 return;
             }
             screenBorderPosition = Camera.main.ScreenToWorldPoint(screenPos).x;
+        }
+
+        public void StartGame()
+        {
+            AsteroidSpawner.Instance.StartSpawning();
         }
     }
 }

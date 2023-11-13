@@ -14,10 +14,15 @@ namespace AsteroidsAssigment
 
         private void OnTriggerEnter2D(Collider2D other)
         {
-            if (other.gameObject.layer != collisionMask) return;
+            if (!IsLayerInMask(other.gameObject.layer)) return;
             if(other.TryGetComponent(out IDamageable damageable))
                 damageable.Hit();
             OnHit();
+        }
+
+        bool IsLayerInMask(int layer)
+        {
+            return (collisionMask.value & (1 << layer)) != 0;
         }
 
         private void Update()
