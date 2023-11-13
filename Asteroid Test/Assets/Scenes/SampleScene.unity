@@ -199,7 +199,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -746,6 +746,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 94f37ac7dfb18a04c8da7e9fb061220c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  menuScreen: {fileID: 0}
+  loseScreen: {fileID: 0}
 --- !u!4 &926134305
 Transform:
   m_ObjectHideFlags: 0
