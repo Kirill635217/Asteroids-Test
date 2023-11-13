@@ -11,6 +11,7 @@ namespace AsteroidsAssigment
         private int splitsLeft;
 
         private const string WALL_TAG = "BottomWall";
+        private const string PLAYER_TAG = "Player";
         private Rigidbody2D rigidbody;
 
         [SerializeField] private int health = 1;
@@ -27,8 +28,12 @@ namespace AsteroidsAssigment
 
         private void OnCollisionEnter2D(Collision2D other)
         {
-            if(other.gameObject.CompareTag(WALL_TAG))
+            if (other.gameObject.CompareTag(WALL_TAG) || other.gameObject.CompareTag(PLAYER_TAG))
+            {
+                if(other.gameObject.TryGetComponent(out IDamageable damageable))
+                    damageable.Hit();
                 AsteroidsObjectPoolManager.Instance.ReturnObjectToPool(gameObject);
+            }
         }
 
         public void Push(Vector2 direction, float force)

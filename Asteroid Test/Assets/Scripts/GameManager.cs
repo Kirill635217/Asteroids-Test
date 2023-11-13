@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace AsteroidsAssigment
 {
@@ -28,6 +29,14 @@ namespace AsteroidsAssigment
         private GameState gameState = GameState.Gameplay;
 
         /// <summary>
+        /// Player reference
+        /// </summary>
+        private Player player;
+
+        [SerializeField] private MenuScreen menuScreen;
+        [SerializeField] private LoseScreen loseScreen;
+
+        /// <summary>
         /// Screen width border position in world space
         /// </summary>
         public float ScreenBorderPosition => screenBorderPosition;
@@ -46,11 +55,35 @@ namespace AsteroidsAssigment
         {
             SetSingleton();
             SetScreenBorderPosition();
+            player = FindObjectOfType<Player>();
         }
 
-        private void Start()
+        private void UpdateUI()
         {
-            StartGame();
+            switch (gameState)
+            {
+                case GameState.Menu:
+                    menuScreen.gameObject.SetActive(true);
+                    loseScreen.gameObject.SetActive(false);
+                    menuScreen.SubscribeToOnPlayButtonClicked(StartGame);
+                    loseScreen.UnsubscribeToOnRestartButtonClicked(StartGame);
+                    loseScreen.UnsubscribeToOnGoToMenuButtonClicked(OnGoToMenu);
+                    break;
+                case GameState.Gameplay:
+                    menuScreen.gameObject.SetActive(false);
+                    loseScreen.gameObject.SetActive(false);
+                    menuScreen.UnsubscribeToOnPlayButtonClicked(StartGame);
+                    loseScreen.UnsubscribeToOnRestartButtonClicked(StartGame);
+                    loseScreen.UnsubscribeToOnGoToMenuButtonClicked(OnGoToMenu);
+                    break;
+                case GameState.LoseScreen:
+                    menuScreen.gameObject.SetActive(false);
+                    loseScreen.gameObject.SetActive(true);
+                    menuScreen.UnsubscribeToOnPlayButtonClicked(StartGame);
+                    loseScreen.SubscribeToOnRestartButtonClicked(StartGame);
+                    loseScreen.SubscribeToOnGoToMenuButtonClicked(OnGoToMenu);
+                    break;
+            }
         }
 
         /// <summary>
@@ -79,9 +112,24 @@ namespace AsteroidsAssigment
             screenBorderPosition = Camera.main.ScreenToWorldPoint(screenPos).x;
         }
 
-        public void StartGame()
+        private void OnPlayerDestroyed()
+        {
+            gameState = GameState.LoseScreen;
+            player.UnsubscribeToOnDestroyed(OnPlayerDestroyed);
+            UpdateUI();
+        }
+
+        private void StartGame()
         {
             AsteroidSpawner.Instance.StartSpawning();
+            player.SubscribeToOnDestroyed(OnPlayerDestroyed);
+            UpdateUI();
+        }
+
+        private void OnGoToMenu()
+        {
+            gameState = GameState.Menu;
+            UpdateUI();
         }
     }
 }
