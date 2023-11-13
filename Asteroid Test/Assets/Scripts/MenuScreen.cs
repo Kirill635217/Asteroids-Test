@@ -23,7 +23,6 @@ namespace AsteroidsAssigment
         private void OnPlayButtonClicked()
         {
             onPlayButtonClicked?.Invoke();
-            gameObject.SetActive(false);
         }
 
         private void Quit()

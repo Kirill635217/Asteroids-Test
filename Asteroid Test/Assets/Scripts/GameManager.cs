@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace AsteroidsAssigment
@@ -24,22 +25,35 @@ namespace AsteroidsAssigment
         private float screenBorderPosition;
 
         /// <summary>
+        /// How many asteroids have been destroyed
+        /// </summary>
+        private int score;
+
+        /// <summary>
         /// Current game state
         /// </summary>
-        private GameState gameState = GameState.Gameplay;
+        private GameState gameState = GameState.Menu;
 
         /// <summary>
         /// Player reference
         /// </summary>
         private Player player;
 
+        private UnityEvent onAsteroidDestroyed = new UnityEvent();
+
         [SerializeField] private MenuScreen menuScreen;
+        [SerializeField] private GameplayScreen gameplayScreen;
         [SerializeField] private LoseScreen loseScreen;
 
         /// <summary>
         /// Screen width border position in world space
         /// </summary>
         public float ScreenBorderPosition => screenBorderPosition;
+
+        /// <summary>
+        /// How many asteroids have been destroyed
+        /// </summary>
+        public int Score => score;
 
         /// <summary>
         /// Current game state
@@ -55,7 +69,9 @@ namespace AsteroidsAssigment
         {
             SetSingleton();
             SetScreenBorderPosition();
+            UpdateUI();
             player = FindObjectOfType<Player>();
+            player.Disable();
         }
 
         private void UpdateUI()
@@ -65,6 +81,7 @@ namespace AsteroidsAssigment
                 case GameState.Menu:
                     menuScreen.gameObject.SetActive(true);
                     loseScreen.gameObject.SetActive(false);
+                    gameplayScreen.gameObject.SetActive(false);
                     menuScreen.SubscribeToOnPlayButtonClicked(StartGame);
                     loseScreen.UnsubscribeToOnRestartButtonClicked(StartGame);
                     loseScreen.UnsubscribeToOnGoToMenuButtonClicked(OnGoToMenu);
@@ -72,6 +89,7 @@ namespace AsteroidsAssigment
                 case GameState.Gameplay:
                     menuScreen.gameObject.SetActive(false);
                     loseScreen.gameObject.SetActive(false);
+                    gameplayScreen.gameObject.SetActive(true);
                     menuScreen.UnsubscribeToOnPlayButtonClicked(StartGame);
                     loseScreen.UnsubscribeToOnRestartButtonClicked(StartGame);
                     loseScreen.UnsubscribeToOnGoToMenuButtonClicked(OnGoToMenu);
@@ -79,6 +97,7 @@ namespace AsteroidsAssigment
                 case GameState.LoseScreen:
                     menuScreen.gameObject.SetActive(false);
                     loseScreen.gameObject.SetActive(true);
+                    gameplayScreen.gameObject.SetActive(false);
                     menuScreen.UnsubscribeToOnPlayButtonClicked(StartGame);
                     loseScreen.SubscribeToOnRestartButtonClicked(StartGame);
                     loseScreen.SubscribeToOnGoToMenuButtonClicked(OnGoToMenu);
@@ -116,13 +135,21 @@ namespace AsteroidsAssigment
         {
             gameState = GameState.LoseScreen;
             player.UnsubscribeToOnDestroyed(OnPlayerDestroyed);
+            player.Disable();
+            AsteroidSpawner.Instance.StopSpawning();
+            AsteroidsObjectPoolManager.Instance.UnsubscribeFromOnObjectReturnedToPool(AsteroidDestroyed);
             UpdateUI();
         }
 
         private void StartGame()
         {
+            gameState = GameState.Gameplay;
             AsteroidSpawner.Instance.StartSpawning();
+            AsteroidsObjectPoolManager.Instance.ReturnAllObjectsToPool();
+            AsteroidsObjectPoolManager.Instance.SubscribeToOnObjectReturnedToPool(AsteroidDestroyed);
             player.SubscribeToOnDestroyed(OnPlayerDestroyed);
+            player.Enable();
+            score = 0;
             UpdateUI();
         }
 
@@ -130,6 +157,22 @@ namespace AsteroidsAssigment
         {
             gameState = GameState.Menu;
             UpdateUI();
+        }
+
+        private void AsteroidDestroyed()
+        {
+            score++;
+            onAsteroidDestroyed?.Invoke();
+        }
+
+        public void SubscribeToOnAsteroidDestroyed(UnityAction action)
+        {
+            onAsteroidDestroyed.AddListener(action);
+        }
+
+        public void UnsubscribeToOnAsteroidDestroyed(UnityAction action)
+        {
+            onAsteroidDestroyed.RemoveListener(action);
         }
     }
 }

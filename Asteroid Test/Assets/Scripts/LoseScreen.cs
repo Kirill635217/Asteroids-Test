@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
@@ -11,6 +12,7 @@ namespace AsteroidsAssigment
     {
         [SerializeField] private Button restartButton;
         [SerializeField] private Button goToMenuButton;
+        [SerializeField] private TMP_Text scoreText;
 
         private UnityEvent onRestartButtonClicked = new UnityEvent();
         private UnityEvent onGoToMenuButtonClicked = new UnityEvent();
@@ -21,16 +23,21 @@ namespace AsteroidsAssigment
             goToMenuButton.onClick.AddListener(OnGoToMenuButtonClicked);
         }
 
+        private void OnEnable()
+        {
+            if(GameManager.Instance == null)
+                return;
+            scoreText.text = $"Score: {GameManager.Instance.Score}";
+        }
+
         private void OnRestartButtonClicked()
         {
             onRestartButtonClicked?.Invoke();
-            gameObject.SetActive(false);
         }
 
         private void OnGoToMenuButtonClicked()
         {
             onGoToMenuButtonClicked?.Invoke();
-            gameObject.SetActive(false);
         }
 
         public void SubscribeToOnRestartButtonClicked(UnityAction action)

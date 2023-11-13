@@ -77,6 +77,14 @@ namespace AsteroidsAssigment
             onObjectReturnedToPool.Invoke();
         }
 
+        public void ReturnAllObjectsToPool()
+        {
+            foreach (var obj in objectPool)
+            {
+                obj.SetActive(false);
+            }
+        }
+
         public void SubscribeToOnObjectReturnedToPool(UnityAction action)
         {
             onObjectReturnedToPool.AddListener(action);

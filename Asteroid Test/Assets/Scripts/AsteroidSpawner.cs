@@ -55,6 +55,11 @@ namespace AsteroidsAssigment
             isSpawning = true;
         }
 
+        public void StopSpawning()
+        {
+            isSpawning = false;
+        }
+
         private void Spawn()
         {
             if (!AsteroidsObjectPoolManager.Instance.ObjectAvailableFromPool(out var availableObj))
